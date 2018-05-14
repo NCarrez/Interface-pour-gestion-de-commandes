@@ -1,0 +1,11 @@
+Converting images
+Generating generated/fonts/UnicodeListcomic_20_4.txt
+Generating generated/fonts/UnicodeListverdana_10_4.txt
+Generating generated/fonts/UnicodeListverdana_40_4.txt
+Generating generated/fonts/src/ApplicationFontProvider.cpp
+Generating generated/fonts/include/fonts/ApplicationFontProvider.hpp
+Generating generated/texts/include/texts/TextKeysAndLanguages.hpp
+Generating generated/texts/src/Texts.cpp
+Generating generated/texts/src/LanguageGb.cpp
+Generating generated/texts/include/texts/TypedTextDatabase.hpp
+Generating generated/texts/src/TypedTextDatabase.cpp
