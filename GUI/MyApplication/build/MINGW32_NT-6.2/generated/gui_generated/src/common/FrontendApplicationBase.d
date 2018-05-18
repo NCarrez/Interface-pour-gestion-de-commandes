@@ -57,6 +57,7 @@ build/MINGW32_NT-6.2/generated/gui_generated/src/common/FrontendApplicationBase.
  touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp \
  touchgfx//framework/include/touchgfx/widgets/Button.hpp \
  touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp \
+ touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp \
  generated/texts/include/texts/TextKeysAndLanguages.hpp
 
 generated/gui_generated/include/gui_generated/common/FrontendApplicationBase.hpp:
@@ -174,5 +175,7 @@ touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp:
 touchgfx//framework/include/touchgfx/widgets/Button.hpp:
 
 touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp:
+
+touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp:
 
 generated/texts/include/texts/TextKeysAndLanguages.hpp:

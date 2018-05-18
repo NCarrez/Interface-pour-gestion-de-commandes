@@ -54,7 +54,8 @@ build/MINGW32_NT-6.2/gui/src/screen1_screen/Screen1View.o: \
  touchgfx//framework/include/touchgfx/Texts.hpp \
  touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp \
  touchgfx//framework/include/touchgfx/widgets/Button.hpp \
- touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp
+ touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp \
+ touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp
 
 gui/include/gui/screen1_screen/Screen1View.hpp:
 
@@ -165,3 +166,5 @@ touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp:
 touchgfx//framework/include/touchgfx/widgets/Button.hpp:
 
 touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp:
+
+touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp:

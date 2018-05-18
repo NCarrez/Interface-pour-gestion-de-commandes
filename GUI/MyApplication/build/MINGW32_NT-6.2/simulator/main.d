@@ -77,6 +77,7 @@ build/MINGW32_NT-6.2/simulator/main.o: simulator/main.cpp \
  touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp \
  touchgfx//framework/include/touchgfx/widgets/Button.hpp \
  touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp \
+ touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp \
  generated/images/include/BitmapDatabase.hpp \
  generated/gui_generated/include/gui_generated/common/SimConstants.hpp \
  touchgfx//framework/include/platform/driver/touch/SDL2TouchController.hpp \
@@ -238,6 +239,8 @@ touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp:
 touchgfx//framework/include/touchgfx/widgets/Button.hpp:
 
 touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp:
+
+touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp:
 
 generated/images/include/BitmapDatabase.hpp:
 

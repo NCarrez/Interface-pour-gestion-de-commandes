@@ -13,6 +13,7 @@
 #include <touchgfx/widgets/ScalableImage.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
+#include <touchgfx/mixins/ClickListener.hpp>
 
 class Screen1ViewBase : public touchgfx::View<Screen1Presenter>
 {
@@ -36,7 +37,7 @@ protected:
     touchgfx::ScalableImage productImage;
     touchgfx::TextArea productQuantity;
     touchgfx::TextArea productDescription;
-    touchgfx::ButtonWithIcon buttonWithIcon1;
+    touchgfx::ClickListener< touchgfx::ButtonWithIcon > buttonWithIcon1;
     touchgfx::Box optionsBackground;
     touchgfx::Container optionsContainer;
     touchgfx::Box separatorVertical1;

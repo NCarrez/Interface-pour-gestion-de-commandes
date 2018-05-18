@@ -54,6 +54,7 @@ build/MINGW32_NT-6.2/generated/gui_generated/src/screen1_screen/Screen1ViewBase.
  touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp \
  touchgfx//framework/include/touchgfx/widgets/Button.hpp \
  touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp \
+ touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp \
  touchgfx//framework/include/touchgfx/Color.hpp \
  generated/images/include/BitmapDatabase.hpp \
  generated/texts/include/texts/TextKeysAndLanguages.hpp
@@ -165,6 +166,8 @@ touchgfx//framework/include/touchgfx/widgets/ButtonWithIcon.hpp:
 touchgfx//framework/include/touchgfx/widgets/Button.hpp:
 
 touchgfx//framework/include/touchgfx/widgets/AbstractButton.hpp:
+
+touchgfx//framework/include/touchgfx/mixins/ClickListener.hpp:
 
 touchgfx//framework/include/touchgfx/Color.hpp:
 
