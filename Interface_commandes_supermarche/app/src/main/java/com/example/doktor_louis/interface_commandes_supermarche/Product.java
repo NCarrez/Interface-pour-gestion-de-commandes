@@ -54,9 +54,12 @@ public class Product {
         return this.barcode;
     }
 
-
     public int getImgId() {
         return this.imgId;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public String getDescription() {

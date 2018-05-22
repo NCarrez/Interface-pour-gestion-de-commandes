@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 
@@ -38,25 +40,28 @@ public class MainActivity extends AppCompatActivity {
 
         // product description
         // layout : productLayout
-        final TextView productText = (TextView)findViewById(R.id.productTextView);
+        final TextView productName = (TextView)findViewById(R.id.productName);
+        final TextView productDescription = (TextView)findViewById(R.id.productDescription);
+        final TextView productQuantity = (TextView)findViewById(R.id.productQuantity);
         final ImageView productImageView = (ImageView)findViewById(R.id.productImageView);
 
-        product.add(new Product(0,1,1,R.drawable.bunny, "Lapin", "Un gentil lapin", "Dans le jardin"));
-        product.add(new Product(1,3,5,R.drawable.bunny, "Lapin", "Un gentil lapin", "Dans le jardin"));
-        product.add(new Product(2,2,42,R.drawable.fox, "Renard", "Un rusé renard", "Derrière le bureau"));
-        product.add(new Product(3,2,42,R.drawable.fox, "Renard", "Un rusé renard", "Derrière le bureau"));
-        product.add(new Product(4,3,5,R.drawable.bunny, "Lapin", "Un gentil lapin", "Dans le jardin"));
-        product.add(new Product(5,2,42,R.drawable.fox, "Renard", "Un rusé renard", "Derrière le bureau"));
 
-        text = "Taille " + product.size();
-        productText.setText(text);
+
+        product.add(new Product(0,1,1,R.drawable.bunny, "Lapin", "Un gentil lapin", "Dans le jardin"));
+        product.add(new Product(1,3,5,R.drawable.bunny, "Lapin", "Un petit lapin", "Dans le jardin"));
+        product.add(new Product(2,2,42,R.drawable.fox,  "Renard", "Un rapide renard", "Derrière le bureau"));
+        product.add(new Product(3,2,42,R.drawable.fox, "Renard", "Un rusé renard", "Derrière le bureau"));
+        product.add(new Product(4,3,5,R.drawable.bunny, "Lapin", "Un gros lapin", "Dans le jardin"));
+        product.add(new Product(5,2,42,R.drawable.fox, "Renard", "Un vieux renard", "Derrière le bureau"));
 
         // button click listeners
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if( ((page*4)+0) <= product.size()-1) {
-                    productText.setText(product.get((page*4)+0).getDescription());
+                    productName.setText(product.get((page*4)+0).getName());
+                    productDescription.setText(product.get((page*4)+0).getDescription());
+                    productQuantity.setText("x" + product.get((page*4)+0).getQuantity());
                     productImageView.setImageResource(product.get((page*4)+0).getImgId());
                 }
             }
@@ -65,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if( ((page*4)+1) <= product.size()-1) {
-                    productText.setText(product.get((page*4)+1).getDescription());
+                    productName.setText(product.get((page*4)+1).getName());
+                    productDescription.setText(product.get((page*4)+1).getDescription());
+                    productQuantity.setText("x" + product.get((page*4)+1).getQuantity());
                     productImageView.setImageResource(product.get((page*4)+1).getImgId());
                 }
             }
@@ -74,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if( ((page*4)+2) <= product.size()-1) {
-                    productText.setText(product.get((page*4)+2).getDescription());
+                    productName.setText(product.get((page*4)+2).getName());
+                    productDescription.setText(product.get((page*4)+2).getDescription());
+                    productQuantity.setText("x" + product.get((page*4)+2).getQuantity());
                     productImageView.setImageResource(product.get((page*4)+2).getImgId());
                 }
             }
@@ -83,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if( ((page*4)+3) <= product.size()-1) {
-                    productText.setText(product.get((page*4)+3).getDescription());
+                    productName.setText(product.get((page*4)+3).getName());
+                    productDescription.setText(product.get((page*4)+3).getDescription());
+                    productQuantity.setText("x" + product.get((page*4)+3).getQuantity());
                     productImageView.setImageResource(product.get((page*4)+3).getImgId());
                 }
             }
@@ -92,17 +103,28 @@ public class MainActivity extends AppCompatActivity {
         buttonRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (page >= 0) {
+                if ( (page >= 0) && (((1+page)*4) <= product.size()) ){
                     page++;
 
-                    text = "Produit " + ((page*4)+1);
-                    button1.setText(text);
-                    text = "Produit " + ((page*4)+2);
-                    button2.setText(text);
-                    text = "Produit " + ((page*4)+3);
-                    button3.setText(text);
-                    text = "Produit " + ((page*4)+4);
-                    button4.setText(text);
+                    if( ((page*4)+0) <= product.size()-1) {
+                        button1.setVisibility(View.VISIBLE);
+                        button1.setText(product.get((page*4)+0).getName());
+                    } else button1.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+1) <= product.size()-1) {
+                        button2.setVisibility(View.VISIBLE);
+                        button2.setText(product.get((page*4)+1).getName());
+                    } else button2.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+2) <= product.size()-1) {
+                        button3.setVisibility(View.VISIBLE);
+                        button3.setText(product.get((page*4)+2).getName());
+                    } else button3.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+3) <= product.size()-1) {
+                        button4.setVisibility(View.VISIBLE);
+                        button4.setText(product.get((page*4)+3).getName());
+                    } else button4.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -112,14 +134,25 @@ public class MainActivity extends AppCompatActivity {
                 if (page >= 1) {
                     page--;
 
-                    text = "Produit " + ((page*4)+1);
-                    button1.setText(text);
-                    text = "Produit " + ((page*4)+2);
-                    button2.setText(text);
-                    text = "Produit " + ((page*4)+3);
-                    button3.setText(text);
-                    text = "Produit " + ((page*4)+4);
-                    button4.setText(text);
+                    if( ((page*4)+0) <= product.size()-1) {
+                        button1.setVisibility(View.VISIBLE);
+                        button1.setText(product.get((page*4)+0).getName());
+                    } else button1.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+1) <= product.size()-1) {
+                        button2.setVisibility(View.VISIBLE);
+                        button2.setText(product.get((page*4)+1).getName());
+                    } else button2.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+2) <= product.size()-1) {
+                        button3.setVisibility(View.VISIBLE);
+                        button3.setText(product.get((page*4)+2).getName());
+                    } else button3.setVisibility(View.INVISIBLE);
+
+                    if( ((page*4)+3) <= product.size()-1) {
+                        button4.setVisibility(View.VISIBLE);
+                        button4.setText(product.get((page*4)+3).getName());
+                    } else button4.setVisibility(View.INVISIBLE);
                 }
             }
         });
