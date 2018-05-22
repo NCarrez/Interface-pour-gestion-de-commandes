@@ -44,8 +44,11 @@
 .\objects\gui_singlethread.o: C:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.3.0\emWin\Include\LCD.h
 .\objects\gui_singlethread.o: C:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.3.0\emWin\Include\Global.h
 .\objects\gui_singlethread.o: C:\Keil_v5\ARM\PACK\Keil\MDK-Middleware\7.3.0\emWin\Include\GUI_Version.h
-.\objects\gui_singlethread.o: IT2R2.c
+.\objects\gui_singlethread.o: icoBluetooth.c
 .\objects\gui_singlethread.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\gui_singlethread.o: temperature.c
-.\objects\gui_singlethread.o: vitesse.c
-.\objects\gui_singlethread.o: train2.c
+.\objects\gui_singlethread.o: icoList.c
+.\objects\gui_singlethread.o: icoNext.c
+.\objects\gui_singlethread.o: icoOpti.c
+.\objects\gui_singlethread.o: icoPrev.c
+.\objects\gui_singlethread.o: icoScan.c
+.\objects\gui_singlethread.o: icoSold.c

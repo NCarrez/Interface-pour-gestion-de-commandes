@@ -360,10 +360,10 @@
             <PlainCh>0</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
-            <wLevel>2</wLevel>
+            <wLevel>1</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
@@ -420,6 +420,11 @@
               <FileName>GUI_SingleThread.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\GUI_SingleThread.c</FilePath>
+            </File>
+            <File>
+              <FileName>GUI_SingleThread.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\GUI_SingleThread.h</FilePath>
             </File>
           </Files>
         </Group>
