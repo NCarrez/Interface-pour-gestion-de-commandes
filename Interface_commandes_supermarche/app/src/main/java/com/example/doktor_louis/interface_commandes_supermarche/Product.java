@@ -12,6 +12,7 @@ public class Product {
     private String name;
     private String description;
     private String place;
+    private boolean soldOut;
 
 
     Product(int productId, int quantity, int barcode, int imgId, String name, String description, String place) {
@@ -22,6 +23,7 @@ public class Product {
         this.name = name;
         this.description = description;
         this.place = place;
+        this.soldOut = false;
     }
 
 
@@ -36,7 +38,7 @@ public class Product {
 
 
     public void setQuantity(int quantity) {
-        if(quantity >= 1) {
+        if(quantity >= 0) {
             this.quantity = quantity;
         }
     }
@@ -65,4 +67,12 @@ public class Product {
     public String getDescription() {
         return this.description;
     }
+
+    public String getPlace() { return this.place; }
+
+    public void setSoldOut(boolean soldOut) {
+        this.soldOut = soldOut;
+    }
+
+    public boolean getSoldOut() {return this.soldOut; }
 }
