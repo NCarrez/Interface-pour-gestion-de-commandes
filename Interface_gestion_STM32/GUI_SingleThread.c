@@ -49,15 +49,23 @@ int MenuOpti[4] = {420, 12,468, 60};
 int MenuBlue[4] = {420,154,468,202};
 int MenuFina[4] = {420,212,468,260};
 
-/*product list;
-list.name="aaa";*/
-char *list[5] = {"Tstaa","Produit 2","Produit 3","A","Product 4"};
-int quantity[5] = {    1,          4,          9, 15,         23};
+//List of items
+char *list[5]   = {"Item 0","Item 1","Item 2","Item 3","Item 4"};
+int quantity[5] = {       1,       4,       9,      15,      23};
+int status[5]   = {       0,       0,       0,       0,       0};
 int listSize = (sizeof(list)/sizeof(list[0]));
 
+//Usage variables
 char texte[50];
 int writeState = 0;
 int listPage = 0;
+int oldPage = 0;
+int itemScan = 0;
+int itemSoldOut = 0;
+int itemClick = -1;
+int itemClicked = 0;
+int finalizeList = 0;
+int finalizeCheck = 0;
 //GuiInit
 void GUIThread (void const *argument);              // thread function
 osThreadId tid_GUIThread;                           // thread id
@@ -65,7 +73,10 @@ osThreadDef (GUIThread, osPriorityIdle, 1, 2048);   // thread object
 
 //Functionnal
 void doScan(int,int,int);
-int getSizeOf(char*[]);
+int finalizeCommand(void);
+void scanItem(int);
+int setSoldOut(int);
+void updateQuantity(int,int);
 //Drawing
 void cleanList(void);
 void clearUI(void);
@@ -79,14 +90,10 @@ void drawZone(void);
 void makeUI(void);
 
 int Init_GUIThread (void) {
-
   tid_GUIThread = osThreadCreate (osThread(GUIThread), NULL);
   if (!tid_GUIThread) return(-1);
-
   return(0);
 }
-
-
 /**
   * System Clock Configuration
   *   System Clock source            = PLL (HSE)
@@ -131,18 +138,13 @@ static void SystemClock_Config (void) {
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
   HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_6);
 }
-
-
-
 /**
   * Configure the MPU attributes
   */
 static void MPU_Config (void) {
   MPU_Region_InitTypeDef MPU_InitStruct;
-
   /* Disable the MPU */
   HAL_MPU_Disable();
-
   /* Configure the MPU attributes for SDRAM */
   MPU_InitStruct.Enable = MPU_REGION_ENABLE;
   MPU_InitStruct.BaseAddress = 0xC0200000;
@@ -155,63 +157,44 @@ static void MPU_Config (void) {
   MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL1;
   MPU_InitStruct.SubRegionDisable = 0x00;
   MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_DISABLE;
-
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
   /* Enable the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
-
-
 /**
   * CPU L1-Cache enable
   */
 static void CPU_CACHE_Enable (void) {
-
   /* Enable I-Cache */
   SCB_EnableICache();
-
   /* Enable D-Cache */
   SCB_EnableDCache();
 }
-
 void GUIThread (void const *argument) {
 
   int X,Y;
 	int press = 1, passed = 0;
 	int productDrawned=0, listDrawned=0;
 
+	//Init
 	MPU_Config ();
 	CPU_CACHE_Enable();                       /* Enable the CPU Cache           */
   HAL_Init();                               /* Initialize the HAL Library     */
   BSP_SDRAM_Init();                         /* Initialize BSP SDRAM           */
   SystemClock_Config();                     /* Configure the System Clock     */
-
   GUI_Init();
 	Touch_Initialize();
-
+	//Clear the UI
 	GUI_SetBkColor(GUI_WHITE);
   GUI_Clear();
 	makeUI();
-
-	// definition police : forme, taille + couleur
-  //GUI_SetFont(&GUI_Font32B_1);
-	//GUI_SetColor(GUI_BLACK);
-	//GUI_SetTextMode(GUI_TM_NORMAL);
   while (1) {
-    /* All GUI related activities might only be called from here */
-		// Les images à afficher doivent être placées dans la boucle infinie
-		
+    /* All GUI related activities might only be called from here */		
 		drawImages();
 		if(productDrawned == 0) {
-			drawProduct("Vache", 1, "12345678910", "3° allée");
+			drawProduct(list[0], quantity[0], "12345678910", "3° allée");
 			productDrawned=1;
 		}
-		if(listDrawned == 0) {
-			//Display Names
-			listDrawned = 1;
-		}
-
 		//GUI_CURSOR_Show();
 		X = GUI_TOUCH_GetxPhys();
 		Y = GUI_TOUCH_GetyPhys();
@@ -222,50 +205,39 @@ void GUIThread (void const *argument) {
 			passed = 0;
 		} else {
 			passed = 1;
-		}	
-		
+		}			
 		if(press == 1 && passed == 0) {
+			//Do Stuff
 			doScan(X,Y, press);
-		}
-		
+		}		
 		//Debug
-		GUI_SetFont(&GUI_Font10_1);
+		/*GUI_SetFont(&GUI_Font10_1);
 		sprintf (texte, "X=%04d", X);
 		GUI_DispStringAt(texte , 420, 127);
 		sprintf (texte, "Y=%04d", Y);
 		GUI_DispStringAt(texte , 420, 142);
 		sprintf (texte, "P=%04d", listPage);
-		GUI_DispStringAt(texte , 420, 112);
-		
-		// mises à jour affichage
+		GUI_DispStringAt(texte , 420, 112);//*/
+		//Update UI
 		GUI_Exec();
   }
 }
-
 /*********************************************************************
 *
 *       Main
 */
 int main (void) {
 	osKernelInitialize ();                    // initialize CMSIS-RTOS
-
   // initialize peripherals here
-
   // create 'thread' functions that start executing,
   Init_GUIThread();
-
   osKernelStart ();                         // start thread execution
-
   osDelay(osWaitForever);
 }
-
-/*************************** End of file ****************************/
 //---FUNCTIONNAL---//
 void doScan(int x, int y, int isPressed) {
 	char scan[50];
-	int itemClicked = -1;
-	//Scan list navigation
-	
+	//Scan list navigation	
 	if(isPressed == 1) {
 		if ((x>ListPrev[0])&&(x<ListPrev[2])&&(y>ListPrev[1])&&(y<ListPrev[3]))
 		{
@@ -288,12 +260,18 @@ void doScan(int x, int y, int isPressed) {
 		//Scan item sold out button
 		else if ((x>ItemSoOu[0])&&(x<ItemSoOu[2])&&(y>ItemSoOu[1])&&(y<ItemSoOu[3]))
 		{
-			sprintf (scan, "Item set as \"Sold out !\"");
+			//sprintf (scan, "Item set as \"Sold out !\"");
+			if(itemSoldOut == 0) {
+				itemSoldOut = 1;
+			} else if (itemSoldOut == 1) {
+				itemSoldOut = 2;
+			}			
 		}
 		//Scan product scan button
 		else if ((x>ItemScan[0])&&(x<ItemScan[2])&&(y>ItemScan[1])&&(y<ItemScan[3]))
 		{
 			sprintf (scan, "Scanning Item");
+			itemScan = 1;
 		}
 		//Scan Options menu
 		else if ((x>MenuOpti[0])&&(x<MenuOpti[2])&&(y>MenuOpti[1])&&(y<MenuOpti[3]))
@@ -309,40 +287,120 @@ void doScan(int x, int y, int isPressed) {
 		else if ((x>MenuFina[0])&&(x<MenuFina[2])&&(y>MenuFina[1])&&(y<MenuFina[3]))
 		{
 			sprintf (scan, "Finalizing Command");
+			finalizeList = 1;
 		}
 		
 		//Scan on Item that are on the list
 		else if ((x>ListItm0[0])&&(x<ListItm0[2])&&(y>ListItm0[1])&&(y<ListItm0[3]))
 		{
 			sprintf (scan, "Item 1 in list");
-			itemClicked = 0;
+			itemClick = 0;
 		}
 		else if ((x>ListItm1[0])&&(x<ListItm1[2])&&(y>ListItm1[1])&&(y<ListItm1[3]))
 		{
 			sprintf (scan, "Item 2 in list");
-			itemClicked = 1;
+			itemClick = 1;
 		}
 		else if ((x>ListItm2[0])&&(x<ListItm2[2])&&(y>ListItm2[1])&&(y<ListItm2[3]))
 		{
 			sprintf (scan, "Item 3 in list");
-			itemClicked = 2;
+			itemClick = 2;
 		}
 		else if ((x>ListItm3[0])&&(x<ListItm3[2])&&(y>ListItm3[1])&&(y<ListItm3[3]))
 		{
 			sprintf (scan, "Item 4 in list");
-			itemClicked = 3;
+			itemClick = 3;
+		} 
+		
+		if((x<ItemSoOu[0])&&(x>ItemSoOu[2])&&(y<ItemSoOu[1])&&(y>ItemSoOu[3])){
+			itemSoldOut = 0;			
+		}
+		
+		//Functionnal
+		if(itemClick != -1) {
+			oldPage = listPage;
+			if(itemClick + (4*oldPage) < listSize)
+				drawProduct(list[itemClick + (4*oldPage)], quantity[itemClick + (4*oldPage)], "156", "3° allée");
+			itemClicked = itemClick;
+			itemClick = -1;
+		}
+		if(itemScan == 1) {			
+			if(quantity[itemClicked + (4*oldPage)] > 0) {
+				scanItem(itemClicked + (4*oldPage));
+			} else {
+				sprintf (scan, "Item quantity = 0");
+			}
+			itemScan = 0;
+		}
+		if(itemSoldOut == 1 || itemSoldOut == 2) {
+			if(itemSoldOut == 1) {
+				sprintf (scan, "Are you sure ?");	
+			} else if(itemSoldOut == 2) {
+				int state = 0;
+				state = setSoldOut(itemClicked + (4*oldPage));
+				if(state == 0) {
+					sprintf (scan, "Item set as Sold Out");
+				} else {
+					sprintf (scan, "Can't set as Sold Out");					
+				}
+				itemSoldOut = 0;
+			}
+		}
+		if(finalizeList == 1) {
+			finalizeCheck = finalizeCommand();
+			if(finalizeCheck == 0) {
+				sprintf (scan, "List is not finished");				
+			} else if (finalizeCheck == -1){
+				sprintf (scan, "List finished with sold out");					
+			} else {
+				sprintf (scan, "List finished !");							
+			}
+			finalizeList = 0;
 		}
 		
 		clearUI();
 		GUI_SetFont(&GUI_Font20_1);
 		drawString(scan);
-		
-		if(itemClicked != -1) {
-			if(itemClicked + (4*listPage) < listSize)
-				drawProduct(list[itemClicked + (4*listPage)], quantity[itemClicked + (4*listPage)], "156", "3° allée");
-			itemClicked = -1;
-		}
 	}
+}
+int finalizeCommand() {
+	int code = 0;
+	for(int i=0; i<listSize; i++) {
+		if(status[i]==0) {
+			return 0;
+		} else if (status[i]==-1) {
+			code = -1;
+		}		
+	}
+	if(code == 0)
+		code = 1;
+	
+	return code;
+}
+void scanItem(int no) {
+	int scan = 1;
+	
+	if(scan == 1) {
+		updateQuantity(no, 1);
+	}	
+}
+int setSoldOut(int no) {
+	if(status[no] != 0) {
+		return 1;		
+	}
+	quantity[no] = -1;
+	status[no] = -1;	
+	drawList();
+	drawProduct(list[no], quantity[no], "156", "3° allée");
+	return 0;
+}
+void updateQuantity(int no,int nbr) {
+	quantity[no] = quantity[no] - nbr;
+	if(quantity[no]==0) {
+		status[no] = 1;
+	}
+	drawList();
+	drawProduct(list[no], quantity[no], "156", "3° allée");
 }
 //---DRAWING---//
 void cleanList() {
@@ -414,8 +472,16 @@ void drawList() {
 			sprintf(item,"%s", list[i + (4*listPage)]);
 			GUI_DispStringAt(item, 5, i*42 +13); // Display Name	
 			GUI_SetFont(&GUI_Font10_1);
-			sprintf(item,"x%02d", quantity[i + (4*listPage)]);
+			if(quantity[i + (4*listPage)] > 0) {
+				sprintf(item,"x%02d", quantity[i + (4*listPage)]);
+			} else if(quantity[i + (4*listPage)] == -1) {
+				GUI_SetColor(GUI_RED);
+				sprintf(item,"Out ");				
+			}	else {
+				sprintf(item,"Ok !");
+			}
 			GUI_DispStringAt(item, 167, i*42 +16); // Display quantity	
+			GUI_SetColor(GUI_BLACK);
 		}
 	}
 }
@@ -425,14 +491,20 @@ void drawProduct(char*name, int productNbr, char*barcode, char*location) {
 	GUI_SetFont(&GUI_Font16_1);
 	GUI_DispStringAt("                 " , 204, 140); // Display location
 	GUI_SetFont(&GUI_Font20_1);
-	GUI_DispStringAt("             ", 300, 85); // Display quantity	
+	GUI_DispStringAt("                  ", 300, 85); // Display quantity	
 	char item[50]="";
 	GUI_SetFont(&GUI_Font24_1);
 	GUI_DispStringAt(name , 204, 115); // Display name
 	GUI_SetFont(&GUI_Font16_1);
 	GUI_DispStringAt(location , 204, 140); // Display location
 	GUI_SetFont(&GUI_Font20_1);
-	sprintf(item," x%02d",productNbr);
+	if(productNbr > 0) {
+		sprintf(item," x%02d",productNbr);
+	} else if(productNbr == -1) {
+		sprintf(item,"Sold Out !");	
+	} else {
+		sprintf(item,"complete");		
+	}
 	GUI_DispStringAt(item, 300, 85); // Display quantity	
 }
 void drawString(char*txt) {
