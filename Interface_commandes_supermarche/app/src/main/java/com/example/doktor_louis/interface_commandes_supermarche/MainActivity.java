@@ -1,6 +1,9 @@
 package com.example.doktor_louis.interface_commandes_supermarche;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,16 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    int page=0, selectedItem=0;
-    String text;
+    private int page=0, selectedItem=0;
+    private final static int REQUEST_CODE_ENABLE_BLUETOOTH = 0;
+    private String text;
 
-    ArrayList<Product> product = new ArrayList<>();
-
-
+    private ArrayList<Product> product = new ArrayList<>();
+    private Set<BluetoothDevice> devices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
         Button buttonScan = findViewById(R.id.buttonScan);
         Button buttonSoldOut = findViewById(R.id.buttonSoldOut);
 
+        // other buttons
+        // layout : otherLayout
+        Button buttonOption = findViewById(R.id.buttonOption);
+        Button buttonBluetooth = findViewById(R.id.buttonBluetooth);
+        Button buttonFinalise = findViewById(R.id.buttonFinalise);
+
         // product description
         // layout : productLayout
         final TextView productName = findViewById(R.id.productName);
@@ -51,12 +61,9 @@ public class MainActivity extends AppCompatActivity {
         final TextView productPlace = findViewById(R.id.productPlace);
         final ImageView productImageView = findViewById(R.id.productImageView);
 
-
-        // other buttons
-        // layout : otherLayout
-        Button buttonOption = findViewById(R.id.buttonOption);
-        Button buttonBluetooth = findViewById(R.id.buttonBluetooth);
-        Button buttonFinalise = findViewById(R.id.buttonFinalise);
+        // bluetooth adapters
+        // TESTING
+        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
         product.add(new Product(0,1,1,R.drawable.bunny, "Lapin", "Un gentil lapin", "Dans le jardin"));
@@ -213,8 +220,23 @@ public class MainActivity extends AppCompatActivity {
         buttonBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                text = "BlueTooth";
+                if(bluetoothAdapter == null) text = "Pas de bluetooth";
+                else {
+                    text = "Avec bluetooth";
+                    if (!bluetoothAdapter.isEnabled()) {
+                        Intent enableBlueTooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                        startActivityForResult(enableBlueTooth, REQUEST_CODE_ENABLE_BLUETOOTH);
+                    }
+                    else {
+                        devices = bluetoothAdapter.getBondedDevices();
+                        for (BluetoothDevice bluetoothDevice : devices) {
+                            text = "Device = " + bluetoothDevice.getName();
+                            Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
                 Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+
             }
         });
         buttonFinalise.setOnClickListener(new View.OnClickListener() {
