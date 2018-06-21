@@ -1,0 +1,9 @@
+Exemple d'utilisation d'interface simple tactile - STM32F746G-Discovery Kit.
+XM 2017
+
+Les images sont obtenues à partir de fichiers .bmp (attention à la taille en px, max 64*64 pour limiter les ko) à l'aide BmpCvt.exe
+- ouvrir le fichier .bmp
+- le mettre à la taille désirée : image -> scale
+- limiter les couleurs : image -> convert to -> best palette
+- sauvegarder le fichier en formet .c en couleurs 8 bits
+- l'intégrer dans le projet
